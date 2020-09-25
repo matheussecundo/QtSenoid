@@ -19,14 +19,12 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-signals:
-
-public:
+private:
     QTimer timer;
     QPen pen;
-    QVector<QPointF> samples;
-private:
-    void resample(int width, int height, qreal multiplier = 1);
+    QVector<qreal> samples;
+
+    void resample(int width, qreal multiplier = 1);
 
     qreal multiplier;
     int current_sample;
