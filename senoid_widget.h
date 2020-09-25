@@ -22,7 +22,7 @@ protected:
 private:
     QTimer timer;
     QPen pen;
-    QVector<qreal> samples;
+    QVector<QLineF> dimensioned_lines;
 
     void resample(int width, qreal multiplier = 1);
 
