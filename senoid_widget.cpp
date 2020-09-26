@@ -2,7 +2,7 @@
 #include <QtWidgets>
 #include <QDebug>
 
-SenoidWidget::SenoidWidget(QWidget *parent) : QWidget(parent), timer(this), multiplier(1), current_sample(0)
+SenoidWidget::SenoidWidget(QWidget *parent) : QWidget(parent), timer(this), multiplier(1), velocity(10), current_sample(0)
 {
     setMouseTracking(true);
 
@@ -10,11 +10,7 @@ SenoidWidget::SenoidWidget(QWidget *parent) : QWidget(parent), timer(this), mult
     pen.setColor(QColor(0xff, 0, 0));
 
     timer.callOnTimeout([&]() {
-        if (current_sample < (width() - 10)) {
-            current_sample += 10;
-        } else {
-            current_sample = 0;
-        }
+        current_sample = (current_sample + velocity) % width();
         update();
     });
 
@@ -35,7 +31,7 @@ PositionOnSenoid SenoidWidget::getPositionOnSenoid(qreal x, qreal y) const {
 void SenoidWidget::resample(int width, qreal multiplier)
 {
     this->multiplier = multiplier;
-    dimensioned_lines.resize(width * 2);
+    dimensioned_lines.resize(width);
     for (int i = 0; i < dimensioned_lines.size(); ++i) {
         auto sample0 = std::sin((i + 0) * (2 * M_PI / (width / multiplier)));
         auto sample1 = std::sin((i + 1) * (2 * M_PI / (width / multiplier)));
@@ -80,5 +76,7 @@ void SenoidWidget::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(pen);
     painter.translate(-current_sample, height() / 2);
-    painter.drawLines(&dimensioned_lines[current_sample], width());
+    painter.drawLines(dimensioned_lines);
+    painter.translate(width(), 0);
+    painter.drawLines(dimensioned_lines);
 }

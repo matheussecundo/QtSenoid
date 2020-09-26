@@ -27,6 +27,7 @@ private:
     void resample(int width, qreal multiplier = 1);
 
     qreal multiplier;
+    int velocity;
     int current_sample;
 };
 
